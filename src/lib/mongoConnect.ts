@@ -6,7 +6,7 @@ export async function mongoConnect(): Promise<{
   db: Db;
 }> {
   const client = await clientPromise;
-  console.log(client);
+  // console.log(client);
   const db = client.db("NextEvent");
   return { client, db };
 }

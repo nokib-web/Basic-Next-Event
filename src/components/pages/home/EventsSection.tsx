@@ -5,16 +5,36 @@ import { TEvent } from "@/types/event";
 import { Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { eventsData } from "../../../../data/eventsData";
+import { useEffect, useState } from "react";
 
 export const EventsSection = () => {
+  const [events, setEvents] = useState<TEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const res = await fetch("/api/events");
+        const data = await res.json();
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchEvents();
+  }, []);
+
+  if (loading) return <p className="text-center mt-10">Loading events...</p>;
   return (
     <section className="my-12 px-4 md:px-8 lg:px-16">
       <h2 className="text-3xl font-semibold mb-12 text-center">
         Upcoming Events
       </h2>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {eventsData.slice(0, 3).map((event: TEvent) => (
+        {events.slice(0, 3).map((event: TEvent) => (
           <div
             key={event.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 relative"
